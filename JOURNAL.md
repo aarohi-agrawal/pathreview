@@ -14,3 +14,16 @@ The repo analyzer currently produces an analysis of a repository but doesn't rep
 **Setup confirmation:** App runs locally at localhost:5173
 
 **Cohort ledger:** Issue added to cohort ledger
+
+## Week 8 — Reproduction & solution planning
+
+**Reproduction commit link:** https://github.com/aarohi-agrawal/pathreview/tree/feat/50-has-tests-detection/reproduce_has_tests_bug.py
+
+**Reproduction summary:**
+I found that `RepoAnalyzer._detect_tests()` already implements correct test-detection logic and already outputs `has_tests`, but `GitHubTool` never populates the `file_structure` field it depends on — so `has_tests` always evaluates to `False` in the real pipeline. I confirmed this by calling `RepoAnalyzer.parse()` directly with and without a `file_structure` key, showing the detection logic works correctly when given data but is never given real data today.
+
+**PLAN.md link:** https://github.com/aarohi-agrawal/pathreview/tree/feat/50-has-tests-detection/PLAN.md
+
+
+**Blockers or open questions:**
+Need to confirm whether fixing `has_ci` (which has the same root-cause bug) is in scope for this issue or should be a separate PR — will ask in Slack/office hours before finalizing the Week 9 build.
