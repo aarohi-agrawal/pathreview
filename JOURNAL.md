@@ -40,3 +40,20 @@ Manually verify against a couple of real GitHub repos, then open a draft PR and 
 
 **Blockers:**
 Still deciding whether fixing `has_ci` (same root cause) belongs in this PR or a separate one — will raise in Slack/office hours.
+
+### Check-in 2 (end of week)
+
+**PR link:** https://github.com/ascherj/pathreview/pull/778
+
+**Branch:** feat/50-has-tests-detection
+
+**What you built:**
+Fixed `has_tests` (and `has_ci`) always returning `False` by having `GitHubTool` fetch the repo's file tree from GitHub's API and populate the `file_structure` field that `RepoAnalyzer._detect_tests()` was already reading but never receiving.
+
+**Tests added or updated:**
+Added `tests/unit/test_github_tool.py` with 3 tests covering the happy path (file_structure correctly populated and detected), graceful fallback on API failure, and existing input-validation behavior. Also manually verified against a real repo (`pytest-dev/pytest`).
+
+**Self-review confirmation:** [x] make check passes  [x] make test-unit passes
+(181 pre-existing lint errors, down from 182 baseline, none new; 53 pre-existing test failures unchanged, plus 3 new tests passing — documented in the PR description)
+
+**Draft PR feedback received from:** none
