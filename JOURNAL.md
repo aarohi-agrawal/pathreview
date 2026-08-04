@@ -27,3 +27,16 @@ I found that `RepoAnalyzer._detect_tests()` already implements correct test-dete
 
 **Blockers or open questions:**
 Need to confirm whether fixing `has_ci` (which has the same root-cause bug) is in scope for this issue or should be a separate PR — will ask in Slack/office hours before finalizing the Week 9 build.
+
+## Week 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+**Current progress:**
+Implemented `_get_file_structure()` in `GitHubTool`, which fetches the repo's file tree via GitHub's Trees API and wires it into the metadata dict as `file_structure`. This is the field `RepoAnalyzer._detect_tests()` was already reading but never receiving, so `has_tests` (and `has_ci`) now reflect real repo contents instead of always returning `False`. Added `tests/unit/test_github_tool.py` with 3 tests covering the happy path, graceful fallback on API failure, and existing input-validation behavior. Confirmed via `make check` (181 errors, down from 182 baseline) and `make test-unit` (53 pre-existing failures unchanged, 3 new tests passing) that no regressions were introduced.
+
+**Next steps:**
+Manually verify against a couple of real GitHub repos, then open a draft PR and request feedback in Slack.
+
+**Blockers:**
+Still deciding whether fixing `has_ci` (same root cause) belongs in this PR or a separate one — will raise in Slack/office hours.
