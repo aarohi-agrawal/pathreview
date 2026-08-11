@@ -57,3 +57,34 @@ Added `tests/unit/test_github_tool.py` with 3 tests covering the happy path (fil
 (181 pre-existing lint errors, down from 182 baseline, none new; 53 pre-existing test failures unchanged, plus 3 new tests passing — documented in the PR description)
 
 **Draft PR feedback received from:** none
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+
+**Summary of feedback:**
+No review comments came in on the PR before this reflection was due. I shared the link but didn't get a chance to follow up in Slack for feedback before finalizing.
+
+**How you responded:**
+N/A — no feedback to respond to yet. If comments come in after submission, I'll address them in a follow-up commit and note it here.
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+Git itself was harder than the actual coding. Several times I thought I'd committed something and it turned out the commit had silently failed — usually because pre-commit hooks (ruff, black, mypy) rejected the commit, or because I hadn't actually staged the file with `git add` first. I also created my feature branch on GitHub directly, which meant my local clone didn't know about it until I ran `git fetch` and `git checkout` — something I hadn't run into before. The PR flow itself (comparing across forks, picking the right base/head repos and branches) also took a few tries to get right.
+
+**What did you learn about working in a large codebase?**
+The issue description didn't match what I actually found in the code. The issue asked me to "add" a `has_tests` boolean, but when I actually read `agent/tools/repo_analyzer.py`, the detection logic and the field already existed — the real bug was that `agent/tools/github_tool.py` never populated the `file_structure` field the detection logic depended on. I learned that understanding the *actual* root cause by reading the code carefully was more valuable than trusting the issue title at face value. I also learned how to separate pre-existing problems in a codebase (182 lint errors, 53 failing tests, none related to my change) from problems my own change introduced — and that "passes" in a real project means "doesn't make things worse," not "the whole codebase is clean."
+
+**How did AI tools help — and where did they fall short?**
+AI was most useful for pattern-matching: once I showed it an existing method like `_has_readme()`, it could draft `_get_file_structure()` in a consistent style, and it could translate cryptic mypy/ruff errors into plain explanations of what was actually wrong and why. It also helped me reason through git problems methodically (checking `git status`/`git log` before guessing) instead of panicking when a commit seemed to "disappear." Where it fell short: it couldn't see my actual terminal output, browser state, or repo contents unless I pasted them in, so I had to be the one who ran commands, checked file listings, and confirmed things worked — AI could guide the diagnosis but not observe the system directly. I also had to be the one to decide the real scope of the fix (whether `has_ci` belonged in this PR).
+
+**What would you do differently if you started over?**
+I'd read through the actual issue's referenced files (`github_tool.py` and `repo_analyzer.py`) *before* committing to the issue, not after — that would have surfaced the real root cause during issue selection instead of during Week 8's reproduction step. I'd also run `make check` and `make test-unit` to capture my baseline earlier, and I'd get in the habit of running `git status` after every commit attempt instead of assuming it worked.
+
+**What are you most proud of from this module?**
+Finding that the issue as written didn't match reality, and being able to explain precisely why — that `RepoAnalyzer` already had working detection logic, and the actual bug was one missing field upstream in `GitHubTool`. That took more careful reading than I expected going in, and it made the fix itself much more targeted than if I'd just "added a boolean" somewhere without understanding why it wasn't working.
